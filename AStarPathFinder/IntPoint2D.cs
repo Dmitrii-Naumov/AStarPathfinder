@@ -4,6 +4,18 @@
 	{
 		public int X;
 		public int Y;
+
+		public IntPoint2D(int x, int y)
+		{
+			X = x;
+			Y = y;
+		}
+
+		public static IntPoint2D operator +(IntPoint2D a, IntPoint2D b) 
+			=> new IntPoint2D { X = a.X + b.X, Y = a.Y + b.Y };
+		public static IntPoint2D operator -(IntPoint2D a, IntPoint2D b) 
+			=> new IntPoint2D { X = a.X - b.X, Y = a.Y - b.Y };
+
 		public override int GetHashCode()
 		{
 			unchecked// Overflow is fine

@@ -1,4 +1,6 @@
 using AStarPathFinder;
+using AStarPathFinder.DistanceAlgorithms;
+using AStarPathFinder.Providers;
 using System;
 using Xunit;
 
@@ -9,13 +11,17 @@ namespace AStarPathFinderTests
 		[Fact]
 		public void CanCalculateStraightPath()
 		{
-			bool[,] map = new bool[3, 3];
-			map[0, 0] = true;
-			map[0, 1] = true;
-			map[0, 2] = true;
 			IntPoint2D from = new IntPoint2D() { X = 0, Y = 0 };
 			IntPoint2D to = new IntPoint2D() { X = 0, Y = 2 };
-			Assert.Equal(2, AStarPathFinder.AStarPathFinder.GetBestPathLength(from, to, map));
+
+			var distanceAlgorithm = new PythagorasAlgorithm();
+
+			var pathFinder = new AStarPathFinder.AStarPathFinder(
+					new AllPathableProvider(),
+					new DiagonalNeighborProvider(),
+					distanceAlgorithm
+				);
+			Assert.Equal(distanceAlgorithm.GetDistance(from, to), pathFinder.GetBestPathLength(from, to));
 		}
 
 		[Fact]
@@ -31,7 +37,13 @@ namespace AStarPathFinderTests
 			map[2, 2] = true;
 			IntPoint2D from = new IntPoint2D() { X = 0, Y = 0 };
 			IntPoint2D to = new IntPoint2D() { X = 2, Y = 2 };
-			Assert.Equal(-1, AStarPathFinder.AStarPathFinder.GetBestPathLength(from, to, map));
+
+			var pathFinder = new AStarPathFinder.AStarPathFinder(
+				new BoolArrayPathableProvider(map),
+				new DiagonalLimitedSizeNeighborProvider(3, 3),
+				new PythagorasAlgorithm()
+			);
+			Assert.False(pathFinder.CanPass(from, to));
 		}
 
 
@@ -59,23 +71,31 @@ namespace AStarPathFinderTests
 			IntPoint2D from = new IntPoint2D() { X = 0, Y = 0 };
 			IntPoint2D to = new IntPoint2D() { X = 3, Y = 0 };
 
-			var pathLength = AStarPathFinder.AStarPathFinder.GetBestPathLength(from, to, map);
+			var pathFinder = new AStarPathFinder.AStarPathFinder(
+				new BoolArrayPathableProvider(map),
+				new DiagonalLimitedSizeNeighborProvider(5, 5),
+				new PythagorasAlgorithm()
+			);
+
+			var pathLength = pathFinder.GetBestPathLength(from, to);
 			Assert.True(pathLength > 5 && pathLength < 6);
 		}
 
 		[Fact]
 		public void CalculatesPathEfficiently()
 		{
-			bool[,] map = new bool[5, 5];
-			for (int i = 0; i < 5; i++)
-				for (int j = 0; j < 5; j++)
-					map[i, j] = true;
 
 			IntPoint2D from = new IntPoint2D() { X = 0, Y = 0 };
 			IntPoint2D to = new IntPoint2D() { X = 4, Y = 4 };
 
+			var pathFinder = new AStarPathFinder.AStarPathFinder(
+				new AllPathableProvider(),
+				new DiagonalLimitedSizeNeighborProvider(5, 5),
+				new PythagorasAlgorithm()
+			);
+
 			int visitedNodesCount;
-			var pathLength = AStarPathFinder.AStarPathFinder.GetBestPathLength(from, to, map, out visitedNodesCount);
+			var pathLength = pathFinder.GetBestPathLength(from, to, out visitedNodesCount);
 			Assert.True(pathLength > 5 && pathLength < 6, "Wrong Path Calculated");
 			Assert.True(visitedNodesCount >= 4 && visitedNodesCount <= 8, "Path Calculated Inefficiently");
 		}
