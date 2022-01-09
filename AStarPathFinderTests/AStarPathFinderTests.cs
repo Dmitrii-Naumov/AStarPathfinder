@@ -2,8 +2,10 @@ using AStarPathFinder;
 using AStarPathFinder.DistanceAlgorithms;
 using AStarPathFinder.Providers;
 using System;
+using System.Runtime.CompilerServices;
 using Xunit;
 
+[assembly: InternalsVisibleTo("AStarPathFinderTests")]
 namespace AStarPathFinderTests
 {
     public class AStarPathFinderTests
@@ -21,7 +23,7 @@ namespace AStarPathFinderTests
 					new DiagonalNeighborProvider(),
 					distanceAlgorithm
 				);
-			Assert.Equal(distanceAlgorithm.GetDistance(from, to), pathFinder.GetBestPathLength(from, to));
+			Assert.Equal(distanceAlgorithm.GetDistance(from, to), pathFinder.GetPathLength(from, to));
 		}
 
 		[Fact]
@@ -77,7 +79,7 @@ namespace AStarPathFinderTests
 				new PythagorasAlgorithm()
 			);
 
-			var pathLength = pathFinder.GetBestPathLength(from, to);
+			var pathLength = pathFinder.GetPathLength(from, to);
 			Assert.True(pathLength > 5 && pathLength < 6);
 		}
 
@@ -95,7 +97,7 @@ namespace AStarPathFinderTests
 			);
 
 			int visitedNodesCount;
-			var pathLength = pathFinder.GetBestPathLength(from, to, out visitedNodesCount);
+			pathFinder.CalculatePath(from, to, out _, out visitedNodesCount, out double pathLength, out _);
 			Assert.True(pathLength > 5 && pathLength < 6, "Wrong Path Calculated");
 			Assert.True(visitedNodesCount >= 4 && visitedNodesCount <= 8, "Path Calculated Inefficiently");
 		}
