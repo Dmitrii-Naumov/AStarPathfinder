@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleToAttribute("AStarPathFinderTests")]
+[assembly: InternalsVisibleTo("AStarPathFinderTests")]
 namespace AStarPathFinder
 {
     public class AStarPathFinder
@@ -12,12 +12,18 @@ namespace AStarPathFinder
         IDistanceAlgorithm DistanceAlgorithm;
         INeighborProvider NeighborProvider;
         IPathableProvider PathableProvider;
-       
-        public AStarPathFinder(IPathableProvider pathableProvider, INeighborProvider neighborProvider, IDistanceAlgorithm distanceAlgorithm)
+        bool ReturnClosestPathIfCannotReachDestination;
+
+
+        public AStarPathFinder(IPathableProvider pathableProvider,
+            INeighborProvider neighborProvider,
+            IDistanceAlgorithm distanceAlgorithm,
+            bool returnClosestPathIfCannotReachDestination = false)
         {
             NeighborProvider = neighborProvider;
             PathableProvider = pathableProvider;
             DistanceAlgorithm = distanceAlgorithm;
+            ReturnClosestPathIfCannotReachDestination = returnClosestPathIfCannotReachDestination;
         }
         #endregion
 
@@ -75,11 +81,23 @@ namespace AStarPathFinder
             }
 
             //no path found
-            visitedNodesCount = visitedNodes.Count;
-            canPass = false;
-            pathLength = double.NaN;
-            path = null;
-            return;
+            if (ReturnClosestPathIfCannotReachDestination)
+            {
+                visitedNodesCount = visitedNodes.Count;
+                canPass = false;
+                IntPoint2D closestPoint = GetBestNode(visitedNodes, to).Value;
+                pathLength = visitedNodes[closestPoint];
+                path = ReconstructPath(pathMemory, closestPoint);
+                return;
+            }
+            else
+            {
+                visitedNodesCount = visitedNodes.Count;
+                canPass = false;
+                pathLength = double.NaN;
+                path = null;
+                return;
+            }
         }
 
         private IntPoint2D? GetBestNode(Dictionary<IntPoint2D, double> unvisitedNodes, IntPoint2D to)
@@ -133,14 +151,14 @@ namespace AStarPathFinder
             }
         }
         private IEnumerable<IntPoint2D> ReconstructPath(
-            IDictionary<IntPoint2D, IntPoint2D> path,
+            IDictionary<IntPoint2D, IntPoint2D> pathMemory,
             IntPoint2D current)
         {
             List<IntPoint2D> totalPath = new List<IntPoint2D>() { current };
 
-            while (path.ContainsKey(current))
+            while (pathMemory.ContainsKey(current))
             {
-                current = path[current];
+                current = pathMemory[current];
                 totalPath.Add(current);
             }
 
