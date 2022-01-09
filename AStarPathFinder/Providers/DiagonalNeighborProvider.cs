@@ -7,7 +7,7 @@ namespace AStarPathFinder.Providers
 {
     public class DiagonalNeighborProvider : INeighborProvider
     {
-        public IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D point)
+        public virtual IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D point)
         {
             for (int x = -1; x <= 1; x++)
             {

@@ -5,16 +5,8 @@ using System.Text;
 
 namespace AStarPathFinder.Providers
 {
-    public class DirectLimitedSizeNeighborProvider : INeighborProvider
+    public class DirectLimitedSizeNeighborProvider : DirectNeighborProvider
     {
-        private static readonly IntPoint2D[] NeighborOffsets = new IntPoint2D[]
-        {
-            new IntPoint2D(  0, -1 ),
-            new IntPoint2D(  0,  1 ),
-            new IntPoint2D(  1,  0 ), 
-            new IntPoint2D( -1,  0 )
-        };
-
         int MaxX;
         int MinX;
         int MaxY;
@@ -31,14 +23,13 @@ namespace AStarPathFinder.Providers
         public DirectLimitedSizeNeighborProvider(int width, int height) : this(width - 1, 0, height - 1, 0)
         { }
 
-        public IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D tile)
+        public override IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D tile)
         {
-            foreach (IntPoint2D neighborOffset in NeighborOffsets)
+            foreach (IntPoint2D neighbor in base.GetNeighbors(tile))
             {
-                IntPoint2D point = tile + neighborOffset;
-                if (point.X <= MaxX && point.X >= MinX && point.Y <= MaxY && point.Y >= MinY)
+                if (neighbor.X <= MaxX && neighbor.X >= MinX && neighbor.Y <= MaxY && neighbor.Y >= MinY)
                 {
-                    yield return point;
+                    yield return neighbor;
                 }
             }
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AStarPathFinder.Providers
 {
-    public class DiagonalLimitedSizeNeighborProvider : INeighborProvider
+    public class DiagonalLimitedSizeNeighborProvider : DiagonalNeighborProvider
     {
         int MaxX;
         int MinX;
@@ -13,7 +13,7 @@ namespace AStarPathFinder.Providers
         int MinY;
 
         public DiagonalLimitedSizeNeighborProvider(int maxX, int minX, int maxY, int minY)
-        { 
+        {
             MaxX = maxX;
             MinX = minX;
             MaxY = maxY;
@@ -23,17 +23,13 @@ namespace AStarPathFinder.Providers
         public DiagonalLimitedSizeNeighborProvider(int width, int height) : this(width - 1, 0, height - 1, 0)
         { }
 
-        public IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D point)
+        public override IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D point)
         {
-            for (int x = -1; x <= 1; x++)
+            foreach (var neighbor in base.GetNeighbors(point))
             {
-                for (int y = -1; y <= 1; y++)
+                if (neighbor.X >= MinX && neighbor.X <= MaxX && neighbor.Y >= MinY && neighbor.Y <= MaxY)
                 {
-                    var neighbor = new IntPoint2D { X = point.X + x, Y = point.Y + y };
-                    if (neighbor.X >= MinX && neighbor.X <= MaxX && neighbor.Y >= MinY && neighbor.Y <= MaxY)
-                    {
-                        yield return neighbor;
-                    }
+                    yield return neighbor;
                 }
             }
         }

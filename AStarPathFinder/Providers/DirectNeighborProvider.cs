@@ -7,7 +7,7 @@ namespace AStarPathFinder.Providers
 {
     public class DirectNeighborProvider : INeighborProvider
     {
-        public IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D tile)
+        public virtual IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D tile)
         {
             yield return new IntPoint2D { X = tile.X + 1, Y = tile.Y };
             yield return new IntPoint2D { X = tile.X - 1, Y = tile.Y };
