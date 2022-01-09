@@ -1,10 +1,6 @@
 ﻿using AStarPathFinder.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AStarPathFinder
 {
@@ -35,23 +31,23 @@ namespace AStarPathFinder
 
         public double GetBestPathLength(IntPoint2D from, IntPoint2D to, out int visitedNodesCount)
         {
-            var visitedNodes = new HashSet<Node>();
-            var unvisitedNodes = new HashSet<Node>();
-            unvisitedNodes.Add(new Node() { Point = from, PathLength = 0 });
+            var visitedNodes = new Dictionary<IntPoint2D, double>();
+            var unvisitedNodes = new Dictionary<IntPoint2D, double>();
+            unvisitedNodes.Add(from, 0);
             while (unvisitedNodes.Any())
             {
-                Node bestNode = GetBestNode(unvisitedNodes, to);
-                
-                if (bestNode.Point.Equals(to))
+                IntPoint2D bestNode = GetBestNode(unvisitedNodes, to).Value;
+                double bestPathLength = unvisitedNodes[bestNode];
+                if (bestNode.Equals(to))
                 {
                     visitedNodesCount = visitedNodes.Count;
-                    return bestNode.PathLength;
+                    return bestPathLength;
                 }
 
-                visitedNodes.Add(bestNode);
+                visitedNodes.Add(bestNode, bestPathLength);
                 unvisitedNodes.Remove(bestNode);
 
-                AddNewNodes(bestNode, visitedNodes, unvisitedNodes);
+                AddNewNodes(bestNode, bestPathLength, visitedNodes, unvisitedNodes);
             }
 
             //no path found
@@ -59,43 +55,48 @@ namespace AStarPathFinder
             return -1;
         }
 
-        private Node GetBestNode(HashSet<Node> unvisitedNodes, IntPoint2D to)
+        private IntPoint2D? GetBestNode(Dictionary<IntPoint2D, double> unvisitedNodes, IntPoint2D to)
         {
-            Node bestNode = null;
+            IntPoint2D? bestNode = null;
             double bestDistance = 0;
             foreach (var node in unvisitedNodes)
             {
-                double newDistance = DistanceAlgorithm.GetDistance(to, node.Point);
-                if (bestNode == null || node.PathLength + newDistance < bestNode.PathLength + bestDistance)
+                double newDistance = DistanceAlgorithm.GetDistance(node.Key, to);
+                if (bestNode == null || node.Value + newDistance < bestDistance)
                 {
-                    bestNode = node;
-                    bestDistance = newDistance;
+                    bestNode = node.Key;
+                    bestDistance = node.Value + newDistance;
                 }
             }
             return bestNode;
         }
 
-        private void AddNewNodes(Node startNode, HashSet<Node> visitedNodes, HashSet<Node> unvisitedNodes)
+        private void AddNewNodes(IntPoint2D startNode, double currentPathLenght, Dictionary<IntPoint2D, double> visitedNodes, Dictionary<IntPoint2D, double> unvisitedNodes)
         {
-            foreach (var neighbor in NeighborProvider.GetNeighbors(startNode.Point))
+            foreach (var neighbor in NeighborProvider.GetNeighbors(startNode))
             {
-                if (PathableProvider.IsPathable(neighbor))
+                if (!PathableProvider.IsPathable(neighbor))
                 {
-                    Node newNode = new Node()
-                    {
-                        Point = neighbor,
-                        PathLength = startNode.PathLength + DistanceAlgorithm.GetDistance(neighbor, startNode.Point)
-                    };
+                    continue;
+                }
 
-                    if (visitedNodes.Contains(newNode))
-                    {
-                        continue;
-                    }
+                if (visitedNodes.ContainsKey(neighbor))
+                {
+                    continue;
+                }
 
-                    if (!unvisitedNodes.TryGetValue(newNode, out Node oldNode) || oldNode.PathLength >= newNode.PathLength)
+                double newPathLength = currentPathLenght + DistanceAlgorithm.GetDistance(neighbor, startNode);
+                if (unvisitedNodes.ContainsKey(neighbor))
+                {
+                    double oldPathLength = unvisitedNodes[neighbor];
+                    if (oldPathLength >= newPathLength)
                     {
-                        unvisitedNodes.Add(newNode);
+                        unvisitedNodes[neighbor] = newPathLength;
                     }
+                }
+                else
+                {
+                    unvisitedNodes.Add(neighbor, newPathLength);
                 }
             }
         }
