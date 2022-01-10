@@ -14,10 +14,12 @@
 			Y = y;
 		}
 
-		public static IntPoint2D operator +(IntPoint2D a, IntPoint2D b) 
-			=> new IntPoint2D { X = a.X + b.X, Y = a.Y + b.Y };
-		public static IntPoint2D operator -(IntPoint2D a, IntPoint2D b) 
-			=> new IntPoint2D { X = a.X - b.X, Y = a.Y - b.Y };
+		public static IntPoint2D operator +(IntPoint2D a, IntPoint2D b)
+			=> new IntPoint2D(a.X + b.X, a.Y + b.Y);
+		public static IntPoint2D operator -(IntPoint2D a)
+			=> new IntPoint2D(-a.X, -a.Y);
+		public static IntPoint2D operator -(IntPoint2D a, IntPoint2D b)
+			=> -b + a;
 
 		public override int GetHashCode()
 		{
@@ -25,7 +27,7 @@
 			{
 				//Use prime number to calculate hash
 
-				return X.GetHashCode() * 486187739 + Y;
+				return X * 486187739 + Y;
 			}
 		}
 		public override bool Equals(object obj)

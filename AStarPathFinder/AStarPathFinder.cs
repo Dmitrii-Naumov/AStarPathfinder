@@ -6,15 +6,22 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("AStarPathFinderTests")]
 namespace AStarPathFinder
 {
-    public class AStarPathFinder
+    /// <summary>
+    /// A* pathfinding algorithm that searches best path in any type of graph.
+    /// </summary>
+    /// <typeparam name="TNode">TNode is a type which represents a pointer
+    /// to a node on the map/graph on which the algorithm searches 
+    /// a path. Must be represented by a struct with a good GetHashValue algorithm.</typeparam>
+    public class AStarPathFinder<TNode>
+        where TNode : struct
     {
         #region State and Constructor
-        IDistanceAlgorithm DistanceAlgorithm;
-        INeighborProvider NeighborProvider;
-        IPathableProvider PathableProvider;
+        IDistanceAlgorithm<TNode> DistanceAlgorithm;
+        INeighborProvider<TNode> NeighborProvider;
+        IPathableProvider<TNode> PathableProvider;
 
         /// <summary>
-        /// A* pathfinding algorythm.
+        /// A* pathfinding algorithm.
         /// </summary>
         /// <param name="pathableProvider">
         /// Implementation of <see cref="IPathableProvider"/> interface. 
@@ -35,7 +42,7 @@ namespace AStarPathFinder
         /// </param>
         /// <example>
         /// <code>
-        /// var pathFinder = new AStarPathFinder(
+        /// var pathFinder = new AStarPathFinder<IntPoint2D>(
         ///     new BoolArrayPathableProvider(pathableMap),
         ///     new DiagonalLimitedSizeNeighborProvider(mapWidth, mapHeight),
         ///     new PythagorasAlgorithm()
@@ -43,9 +50,9 @@ namespace AStarPathFinder
         /// var path = pathFinder.GetPath(from, to);
         /// </code>
         /// </example>
-        public AStarPathFinder(IPathableProvider pathableProvider,
-            INeighborProvider neighborProvider,
-            IDistanceAlgorithm distanceAlgorithm)
+        public AStarPathFinder(IPathableProvider<TNode> pathableProvider,
+            INeighborProvider<TNode> neighborProvider,
+            IDistanceAlgorithm<TNode> distanceAlgorithm)
         {
             NeighborProvider = neighborProvider;
             PathableProvider = pathableProvider;
@@ -58,7 +65,7 @@ namespace AStarPathFinder
         /// Returns true if a path exists between <paramref name="from"/>
         /// and <paramref name="to"/> points.
         /// </summary>
-        public bool CanPass(IntPoint2D from, IntPoint2D to)
+        public bool CanPass(TNode from, TNode to)
         {
             CalculatePath(from, to, out bool canPass, out _, out _, out _);
             return canPass;
@@ -68,7 +75,7 @@ namespace AStarPathFinder
         /// Returns the shortest possible path length between <paramref name="from"/>
         /// and <paramref name="to"/> points.
         /// </summary>
-        public double GetPathLength(IntPoint2D from, IntPoint2D to)
+        public double GetPathLength(TNode from, TNode to)
         {
             CalculatePath(from, to, out _, out _, out double bestPathLength, out _);
             return bestPathLength;
@@ -82,32 +89,32 @@ namespace AStarPathFinder
         /// the method to always return a path, even if the <paramref name="to"/> point 
         /// is unreachable. In that case the path to the closest reachable point is returned.
         /// </param>
-        public IEnumerable<IntPoint2D> GetPath(IntPoint2D from, IntPoint2D to, bool returnClosestPathIfCannotReachDestination = false)
+        public IEnumerable<TNode> GetPath(TNode from, TNode to, bool returnClosestPathIfCannotReachDestination = false)
         {
-            CalculatePath(from, to, out _, out _, out _, out IEnumerable<IntPoint2D> path, returnClosestPathIfCannotReachDestination);
+            CalculatePath(from, to, out _, out _, out _, out IEnumerable<TNode> path, returnClosestPathIfCannotReachDestination);
             return path;
         }
         #endregion
 
         #region Implementation
         //TODO: implement caching
-        internal void CalculatePath(IntPoint2D from, IntPoint2D to,
+        internal void CalculatePath(TNode from, TNode to,
             out bool canPass,
             out int visitedNodesCount,
             out double pathLength,
-            out IEnumerable<IntPoint2D> path,
+            out IEnumerable<TNode> path,
             bool returnClosestPathIfCannotReachDestination = false)
         {
-            var visitedNodes = new Dictionary<IntPoint2D, double>();
-            var unvisitedNodes = new Dictionary<IntPoint2D, double>();
+            var visitedNodes = new Dictionary<TNode, double>();
+            var unvisitedNodes = new Dictionary<TNode, double>();
             unvisitedNodes.Add(from, 0);
 
 
-            var pathMemory = new Dictionary<IntPoint2D, IntPoint2D>();
+            var pathMemory = new Dictionary<TNode, TNode>();
 
             while (unvisitedNodes.Any())
             {
-                IntPoint2D bestNode = GetBestNode(unvisitedNodes, to).Value;
+                TNode bestNode = GetBestNode(unvisitedNodes, to);
                 double bestPathLength = unvisitedNodes[bestNode];
                 if (bestNode.Equals(to))
                 {
@@ -129,7 +136,7 @@ namespace AStarPathFinder
             {
                 visitedNodesCount = visitedNodes.Count;
                 canPass = false;
-                IntPoint2D closestPoint = GetBestNode(visitedNodes, to).Value;
+                TNode closestPoint = GetBestNode(visitedNodes, to);
                 pathLength = visitedNodes[closestPoint];
                 path = ReconstructPath(pathMemory, closestPoint);
                 return;
@@ -144,9 +151,9 @@ namespace AStarPathFinder
             }
         }
 
-        private IntPoint2D? GetBestNode(Dictionary<IntPoint2D, double> unvisitedNodes, IntPoint2D to)
+        private TNode GetBestNode(Dictionary<TNode, double> unvisitedNodes, TNode to)
         {
-            IntPoint2D? bestNode = null;
+            TNode? bestNode = null;
             double bestDistance = 0;
             foreach (var node in unvisitedNodes)
             {
@@ -157,13 +164,13 @@ namespace AStarPathFinder
                     bestDistance = node.Value + newDistance;
                 }
             }
-            return bestNode;
+            return bestNode.Value;
         }
 
-        private void AddNewNodes(IntPoint2D startNode, double currentPathLenght, 
-            Dictionary<IntPoint2D, double> visitedNodes, 
-            Dictionary<IntPoint2D, double> unvisitedNodes, 
-            Dictionary<IntPoint2D, IntPoint2D> pathMemory)
+        private void AddNewNodes(TNode startNode, double currentPathLenght, 
+            Dictionary<TNode, double> visitedNodes, 
+            Dictionary<TNode, double> unvisitedNodes, 
+            Dictionary<TNode, TNode> pathMemory)
         {
             foreach (var neighbor in NeighborProvider.GetNeighbors(startNode))
             {
@@ -194,11 +201,11 @@ namespace AStarPathFinder
                 }
             }
         }
-        private IEnumerable<IntPoint2D> ReconstructPath(
-            IDictionary<IntPoint2D, IntPoint2D> pathMemory,
-            IntPoint2D current)
+        private IEnumerable<TNode> ReconstructPath(
+            IDictionary<TNode, TNode> pathMemory,
+            TNode current)
         {
-            List<IntPoint2D> totalPath = new List<IntPoint2D>() { current };
+            List<TNode> totalPath = new List<TNode>() { current };
 
             while (pathMemory.ContainsKey(current))
             {

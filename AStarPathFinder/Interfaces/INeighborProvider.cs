@@ -2,8 +2,9 @@
 
 namespace AStarPathFinder.Interfaces
 {
-    public interface INeighborProvider
+    public interface INeighborProvider<TNode>
+        where TNode : struct
     {
-        IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D tile);
+        IEnumerable<TNode> GetNeighbors(TNode tile);
     }
 }

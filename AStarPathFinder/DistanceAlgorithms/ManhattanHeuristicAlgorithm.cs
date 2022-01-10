@@ -4,10 +4,10 @@ using System;
 namespace AStarPathFinder.DistanceAlgorithms
 {
     /// <summary>
-    /// Algorithm that calculates distance by taking max distance by one axis.
+    /// Algorithm that calculates 2D distance by taking max distance by one axis.
     /// Works well if diagonal movement cost is considered the same as straight movement cost.
     /// </summary>
-    public class MaxDimensionDistanceAlgorithm : IDistanceAlgorithm
+    public class MaxDimensionDistanceAlgorithm : IDistanceAlgorithm<IntPoint2D>
     {
         public double GetDistance(IntPoint2D from, IntPoint2D to)
         {

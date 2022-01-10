@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AStarPathFinder.Interfaces
+﻿namespace AStarPathFinder.Interfaces
 {
-    public interface IDistanceAlgorithm
+    public interface IDistanceAlgorithm<TNode>
+        where TNode : struct
     {
-        double GetDistance(IntPoint2D from, IntPoint2D to);
+        double GetDistance(TNode from, TNode to);
     }
 }

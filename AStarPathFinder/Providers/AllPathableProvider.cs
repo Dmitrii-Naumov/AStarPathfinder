@@ -5,9 +5,10 @@ namespace AStarPathFinder.Providers
     /// <summary>
     /// Always returns true.
     /// </summary>
-    public class AllPathableProvider : IPathableProvider
+    public class AllPathableProvider<TNode> : IPathableProvider<TNode>
+        where TNode : struct
     {
-        public bool IsPathable(IntPoint2D tile)
+        public bool IsPathable(TNode tile)
         {
             return true;
         }

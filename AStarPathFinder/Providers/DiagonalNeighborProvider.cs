@@ -1,14 +1,12 @@
 ﻿using AStarPathFinder.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AStarPathFinder.Providers
 {
     /// <summary>
-    /// Returns all direct and diagonal neighbors.
+    /// Returns all direct and diagonal neighbors on 2D grid.
     /// </summary>
-    public class DiagonalNeighborProvider : INeighborProvider
+    public class DiagonalNeighborProvider : INeighborProvider<IntPoint2D>
     {
         public virtual IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D point)
         {

@@ -1,7 +1,4 @@
-﻿using AStarPathFinder.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AStarPathFinder.Providers
 {

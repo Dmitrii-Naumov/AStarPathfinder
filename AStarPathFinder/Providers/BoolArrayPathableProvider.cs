@@ -6,7 +6,7 @@ namespace AStarPathFinder.Providers
     /// Pathable provider that uses bollean 2-dimension array 
     /// representing map of pathable tiles.
     /// </summary>
-    public class BoolArrayPathableProvider : IPathableProvider
+    public class BoolArrayPathableProvider : IPathableProvider<IntPoint2D>
     {
         bool[,] PathingGrid;
 

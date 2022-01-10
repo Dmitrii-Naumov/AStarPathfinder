@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AStarPathFinder.Interfaces
+﻿namespace AStarPathFinder.Interfaces
 {
-    public interface IPathableProvider
+    public interface IPathableProvider<TNode>
+        where TNode : struct
     {
-        bool IsPathable(IntPoint2D tile);
+        bool IsPathable(TNode node);
     }
 }
