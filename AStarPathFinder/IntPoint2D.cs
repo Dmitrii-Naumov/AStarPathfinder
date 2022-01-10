@@ -1,5 +1,8 @@
 ﻿namespace AStarPathFinder
 {
+	/// <summary>
+	/// Represents a point on 2D grid with Integer coordinates.
+	/// </summary>
     public struct IntPoint2D
 	{
 		public int X;

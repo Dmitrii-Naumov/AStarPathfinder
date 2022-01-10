@@ -5,6 +5,9 @@ using System.Text;
 
 namespace AStarPathFinder.Providers
 {
+    /// <summary>
+    /// Returns all direct and diagonal neighbors.
+    /// </summary>
     public class DiagonalNeighborProvider : INeighborProvider
     {
         public virtual IEnumerable<IntPoint2D> GetNeighbors(IntPoint2D point)

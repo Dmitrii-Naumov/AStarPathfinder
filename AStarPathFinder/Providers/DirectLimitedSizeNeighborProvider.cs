@@ -5,6 +5,10 @@ using System.Text;
 
 namespace AStarPathFinder.Providers
 {
+    /// <summary>
+    /// Returns only direct neighbors (diagonal neighbors are not returned)
+    /// if they are withing the set boundaries.
+    /// </summary>
     public class DirectLimitedSizeNeighborProvider : DirectNeighborProvider
     {
         int MaxX;

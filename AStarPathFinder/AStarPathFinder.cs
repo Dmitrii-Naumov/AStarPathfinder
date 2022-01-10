@@ -12,47 +12,91 @@ namespace AStarPathFinder
         IDistanceAlgorithm DistanceAlgorithm;
         INeighborProvider NeighborProvider;
         IPathableProvider PathableProvider;
-        bool ReturnClosestPathIfCannotReachDestination;
 
-
+        /// <summary>
+        /// A* pathfinding algorythm.
+        /// </summary>
+        /// <param name="pathableProvider">
+        /// Implementation of <see cref="IPathableProvider"/> interface. 
+        /// The instance is responsible for providing the pathfinding algorithm
+        /// with pathable (that is not blocked) state of 
+        /// points/tiles/nodes/cells or whatever we need to find a path through.
+        /// </param>
+        /// <param name="neighborProvider">
+        /// Implementation of <see cref="INeighborProvider"/> interface. 
+        /// The instance is responsible for providing the pathfinding algorithm
+        /// with neigbors of points/tiles/nodes/cells or whatever we need to find a path through.
+        /// </param>
+        /// <param name="distanceAlgorithm">
+        /// Implementation of <see cref="IDistanceAlgorithm"/> interface. 
+        /// The instance is responsible for providing the pathfinding algorithm
+        /// with an algorithm calculating distance between 
+        /// points/tiles/nodes/cells or whatever we need to find a path through.
+        /// </param>
+        /// <example>
+        /// <code>
+        /// var pathFinder = new AStarPathFinder(
+        ///     new BoolArrayPathableProvider(pathableMap),
+        ///     new DiagonalLimitedSizeNeighborProvider(mapWidth, mapHeight),
+        ///     new PythagorasAlgorithm()
+        /// );
+        /// var path = pathFinder.GetPath(from, to);
+        /// </code>
+        /// </example>
         public AStarPathFinder(IPathableProvider pathableProvider,
             INeighborProvider neighborProvider,
-            IDistanceAlgorithm distanceAlgorithm,
-            bool returnClosestPathIfCannotReachDestination = false)
+            IDistanceAlgorithm distanceAlgorithm)
         {
             NeighborProvider = neighborProvider;
             PathableProvider = pathableProvider;
             DistanceAlgorithm = distanceAlgorithm;
-            ReturnClosestPathIfCannotReachDestination = returnClosestPathIfCannotReachDestination;
         }
         #endregion
 
         #region Public Methods
+        /// <summary>
+        /// Returns true if a path exists between <paramref name="from"/>
+        /// and <paramref name="to"/> points.
+        /// </summary>
         public bool CanPass(IntPoint2D from, IntPoint2D to)
         {
             CalculatePath(from, to, out bool canPass, out _, out _, out _);
             return canPass;
         }
 
+        /// <summary>
+        /// Returns the shortest possible path length between <paramref name="from"/>
+        /// and <paramref name="to"/> points.
+        /// </summary>
         public double GetPathLength(IntPoint2D from, IntPoint2D to)
         {
             CalculatePath(from, to, out _, out _, out double bestPathLength, out _);
             return bestPathLength;
         }
-        public IEnumerable<IntPoint2D> GetPath(IntPoint2D from, IntPoint2D to)
+
+        /// <summary>
+        /// Returns the shortest possible path between <paramref name="from"/>
+        /// and <paramref name="to"/> points.
+        /// </summary>
+        /// <param name="returnClosestPathIfCannotReachDestination">If set to true, forces
+        /// the method to always return a path, even if the <paramref name="to"/> point 
+        /// is unreachable. In that case the path to the closest reachable point is returned.
+        /// </param>
+        public IEnumerable<IntPoint2D> GetPath(IntPoint2D from, IntPoint2D to, bool returnClosestPathIfCannotReachDestination = false)
         {
-            CalculatePath(from, to, out _, out _, out _, out IEnumerable<IntPoint2D> path);
+            CalculatePath(from, to, out _, out _, out _, out IEnumerable<IntPoint2D> path, returnClosestPathIfCannotReachDestination);
             return path;
         }
         #endregion
 
         #region Implementation
         //TODO: implement caching
-        internal void CalculatePath(IntPoint2D from, IntPoint2D to, 
-            out bool canPass, 
-            out int visitedNodesCount, 
-            out double pathLength, 
-            out IEnumerable<IntPoint2D> path)
+        internal void CalculatePath(IntPoint2D from, IntPoint2D to,
+            out bool canPass,
+            out int visitedNodesCount,
+            out double pathLength,
+            out IEnumerable<IntPoint2D> path,
+            bool returnClosestPathIfCannotReachDestination = false)
         {
             var visitedNodes = new Dictionary<IntPoint2D, double>();
             var unvisitedNodes = new Dictionary<IntPoint2D, double>();
@@ -81,7 +125,7 @@ namespace AStarPathFinder
             }
 
             //no path found
-            if (ReturnClosestPathIfCannotReachDestination)
+            if (returnClosestPathIfCannotReachDestination)
             {
                 visitedNodesCount = visitedNodes.Count;
                 canPass = false;

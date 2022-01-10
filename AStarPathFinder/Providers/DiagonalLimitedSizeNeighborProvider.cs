@@ -1,10 +1,10 @@
-﻿using AStarPathFinder.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AStarPathFinder.Providers
 {
+    /// <summary>
+    /// Returns all direct and diagonal cells if they are within set boundaries.
+    /// </summary>
     public class DiagonalLimitedSizeNeighborProvider : DiagonalNeighborProvider
     {
         int MaxX;
