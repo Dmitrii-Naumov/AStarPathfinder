@@ -1,4 +1,7 @@
 # AStarPathfinder
+[![NuGet](https://buildstats.info/nuget/GenericAStarPathFinder)](https://www.nuget.org/packages/GenericAStarPathFinder/)
+
+
 Implementation of AStar pathfinding algorithm in C# allowing to find path to closest point if the destination point is not available.
 The algorithm can calculate a path on 2D grid, 3D grid or any other type of space representation for which operations of 
 getting neighbor coordinates and calculating distance are defined.
