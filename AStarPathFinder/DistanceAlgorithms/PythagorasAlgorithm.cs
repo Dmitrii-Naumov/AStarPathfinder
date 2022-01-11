@@ -1,7 +1,7 @@
-﻿using AStarPathFinder.Interfaces;
+﻿using GenericAStarPathFinder.Interfaces;
 using System;
 
-namespace AStarPathFinder.DistanceAlgorithms
+namespace GenericAStarPathFinder.DistanceAlgorithms
 {
     /// <summary>
     /// Standard 2D distance calculating algorithm.

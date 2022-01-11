@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AStarPathFinder\AStarPathFinder.csproj" />
+    <ProjectReference Include="..\AStarPathFinder\GenericAStarPathFinder.csproj" />
   </ItemGroup>
 
 </Project>

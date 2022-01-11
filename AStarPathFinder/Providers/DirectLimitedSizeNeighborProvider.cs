@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AStarPathFinder.Providers
+namespace GenericAStarPathFinder.Providers
 {
     /// <summary>
     /// Returns only direct neighbors (diagonal neighbors are not returned)

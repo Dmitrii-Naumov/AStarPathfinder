@@ -1,6 +1,6 @@
-using AStarPathFinder;
-using AStarPathFinder.DistanceAlgorithms;
-using AStarPathFinder.Providers;
+using GenericAStarPathFinder;
+using GenericAStarPathFinder.DistanceAlgorithms;
+using GenericAStarPathFinder.Providers;
 using System.Runtime.CompilerServices;
 using Xunit;
 
@@ -88,7 +88,7 @@ namespace AStarPathFinderTests
 			IntPoint2D from = new IntPoint2D() { X = 0, Y = 0 };
 			IntPoint2D to = new IntPoint2D() { X = 3, Y = 0 };
 
-			var pathFinder = new AStarPathFinder.AStarPathFinder<IntPoint2D>(
+			var pathFinder = new AStarPathFinder<IntPoint2D>(
 				new BoolArrayPathableProvider(map),
 				new DiagonalLimitedSizeNeighborProvider(5, 5),
 				new PythagorasAlgorithm()

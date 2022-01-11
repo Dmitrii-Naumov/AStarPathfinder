@@ -1,4 +1,4 @@
-﻿namespace AStarPathFinder
+﻿namespace GenericAStarPathFinder
 {
 	/// <summary>
 	/// Represents a point on 3D grid with Integer coordinates.

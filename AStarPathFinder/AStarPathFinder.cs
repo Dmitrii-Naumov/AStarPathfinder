@@ -1,10 +1,10 @@
-﻿using AStarPathFinder.Interfaces;
+﻿using GenericAStarPathFinder.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("AStarPathFinderTests")]
-namespace AStarPathFinder
+namespace GenericAStarPathFinder
 {
     /// <summary>
     /// A* pathfinding algorithm that searches best path in any type of graph.

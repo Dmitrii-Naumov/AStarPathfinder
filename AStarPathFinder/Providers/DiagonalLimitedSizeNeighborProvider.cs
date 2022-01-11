@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AStarPathFinder.Providers
+namespace GenericAStarPathFinder.Providers
 {
     /// <summary>
     /// Returns all direct and diagonal cells if they are within set boundaries.

@@ -1,6 +1,6 @@
-﻿using AStarPathFinder.Interfaces;
+﻿using GenericAStarPathFinder.Interfaces;
 
-namespace AStarPathFinder.Providers
+namespace GenericAStarPathFinder.Providers
 {
     /// <summary>
     /// Pathable provider that uses bollean 2-dimension array 

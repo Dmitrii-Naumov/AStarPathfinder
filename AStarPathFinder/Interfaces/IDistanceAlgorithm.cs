@@ -1,4 +1,4 @@
-﻿namespace AStarPathFinder.Interfaces
+﻿namespace GenericAStarPathFinder.Interfaces
 {
     public interface IDistanceAlgorithm<TNode>
         where TNode : struct

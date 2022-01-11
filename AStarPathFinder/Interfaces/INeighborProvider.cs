@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AStarPathFinder.Interfaces
+namespace GenericAStarPathFinder.Interfaces
 {
     public interface INeighborProvider<TNode>
         where TNode : struct

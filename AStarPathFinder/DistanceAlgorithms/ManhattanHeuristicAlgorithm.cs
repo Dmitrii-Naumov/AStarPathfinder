@@ -1,7 +1,7 @@
-﻿using AStarPathFinder.Interfaces;
+﻿using GenericAStarPathFinder.Interfaces;
 using System;
 
-namespace AStarPathFinder.DistanceAlgorithms
+namespace GenericAStarPathFinder.DistanceAlgorithms
 {
     /// <summary>
     /// Algorithm that calculates 2D distance by taking max distance by one axis.

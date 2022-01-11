@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>Dmitrii Naumov</Authors>
+    <AssemblyName>GenericAStarPathFinder</AssemblyName>
+    <ApplicationIcon>AStarEmblem.ico</ApplicationIcon>
+    <Description>Generic implementation of A* pathfinding algorithm for which you can provide different implementations of Distance Calculation algorythms, neighbor/space topology provider, pathable nodes provider, and struct representing node coordinates. </Description>
+    <PackageIcon>AStarEmblem.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Dmitrii-Naumov/AStarPathfinder</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>path;pathfinding;astar</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="AStarEmblem.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\AStarEmblem.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

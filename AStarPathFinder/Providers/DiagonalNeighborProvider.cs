@@ -1,7 +1,7 @@
-﻿using AStarPathFinder.Interfaces;
+﻿using GenericAStarPathFinder.Interfaces;
 using System.Collections.Generic;
 
-namespace AStarPathFinder.Providers
+namespace GenericAStarPathFinder.Providers
 {
     /// <summary>
     /// Returns all direct and diagonal neighbors on 2D grid.

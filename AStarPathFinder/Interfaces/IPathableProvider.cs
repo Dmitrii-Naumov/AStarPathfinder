@@ -1,4 +1,4 @@
-﻿namespace AStarPathFinder.Interfaces
+﻿namespace GenericAStarPathFinder.Interfaces
 {
     public interface IPathableProvider<TNode>
         where TNode : struct

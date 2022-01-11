@@ -1,6 +1,6 @@
-﻿using AStarPathFinder.Interfaces;
+﻿using GenericAStarPathFinder.Interfaces;
 
-namespace AStarPathFinder.Providers
+namespace GenericAStarPathFinder.Providers
 {
     /// <summary>
     /// Always returns true.
